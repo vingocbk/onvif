@@ -304,7 +304,7 @@ int main()
   std::cout << "----------------GetProfiles Media--------------" << std::endl;
   // set the Media proxy endpoint to XAddr
   proxyMedia.soap_endpoint = GetCapabilitiesResponse.Capabilities->Media->XAddr.c_str();
-  std::cout << "proxyMedia.soap_endpoint : " << proxyMedia.soap_endpoint << std::endl;
+  // std::cout << "proxyMedia.soap_endpoint : " << proxyMedia.soap_endpoint << std::endl;
   _trt__GetProfiles GetProfiles;
   _trt__GetProfilesResponse GetProfilesResponse;
   set_credentials(soap);
@@ -323,15 +323,96 @@ int main()
     if (proxyMedia.GetSnapshotUri(&GetSnapshotUri, GetSnapshotUriResponse))
       report_error(soap);
     check_response(soap);
-    std::cout << "Profile name: " << GetProfilesResponse.Profiles[i]->Name << std::endl;
-    // std::cout << "Profile token: " << GetProfilesResponse.Profiles[i]->token << std::endl;
-    if (GetSnapshotUriResponse.MediaUri)
+    std::cout << "Profile name        : " << GetProfilesResponse.Profiles[i]->Name << std::endl;
+    std::cout << "Profile token       : " << GetProfilesResponse.Profiles[i]->token << std::endl;
+
+    if(GetProfilesResponse.Profiles[i]->VideoEncoderConfiguration)
     {
-      std::cout << "Snapshot Uri: " << GetSnapshotUriResponse.MediaUri->Uri.c_str() << std::endl;
-      // save_snapshot(i, GetSnapshotUriResponse.MediaUri->Uri.c_str());
+      std::cout << "-VideoEncoderConfiguration-" << std::endl;
+      std::cout << "token               : " << GetProfilesResponse.Profiles[i]->VideoEncoderConfiguration->token << std::endl;
+      std::cout << "Name                : " << GetProfilesResponse.Profiles[i]->VideoEncoderConfiguration->Name << std::endl;
+      std::cout << "UseCount            : " << GetProfilesResponse.Profiles[i]->VideoEncoderConfiguration->UseCount << std::endl;
+      std::cout << "GuaranteedFrameRate : " << (GetProfilesResponse.Profiles[i]->VideoEncoderConfiguration->GuaranteedFrameRate ? "true":"false") << std::endl;
+      switch (GetProfilesResponse.Profiles[i]->VideoEncoderConfiguration->Encoding)
+      {
+      case tt__VideoEncoding__JPEG:
+        std::cout << "Encoding : JPEG" << std::endl;
+        break;
+      case tt__VideoEncoding__MPEG4:
+        std::cout << "Encoding : MPEG4" << std::endl;
+        break;
+      case tt__VideoEncoding__H264:
+        std::cout << "Encoding : H264" << std::endl;
+        break;
+      default:
+        break;
+      }
+      std::cout << "Resolution Width  : " << GetProfilesResponse.Profiles[i]->VideoEncoderConfiguration->Resolution->Width << std::endl;
+      std::cout << "Resolution Height : " << GetProfilesResponse.Profiles[i]->VideoEncoderConfiguration->Resolution->Height << std::endl;
+      std::cout << "Quality           : " << GetProfilesResponse.Profiles[i]->VideoEncoderConfiguration->Quality << std::endl;
+      std::cout << "FrameRateLimit    : " << GetProfilesResponse.Profiles[i]->VideoEncoderConfiguration->RateControl->FrameRateLimit << std::endl;
+      std::cout << "EncodingInterval  : " << GetProfilesResponse.Profiles[i]->VideoEncoderConfiguration->RateControl->EncodingInterval << std::endl;
+      std::cout << "BitrateLimit      : " << GetProfilesResponse.Profiles[i]->VideoEncoderConfiguration->RateControl->BitrateLimit << std::endl;
+      if(GetProfilesResponse.Profiles[i]->VideoEncoderConfiguration->MPEG4)
+      {
+        std::cout << "MPEG4 GovLength    : " << GetProfilesResponse.Profiles[i]->VideoEncoderConfiguration->MPEG4->GovLength << std::endl;
+        switch (GetProfilesResponse.Profiles[i]->VideoEncoderConfiguration->MPEG4->Mpeg4Profile)
+        {
+        case tt__Mpeg4Profile__SP:
+          std::cout << "MPEG4 Mpeg4Profile    : SP" << std::endl;
+          break;
+        case tt__Mpeg4Profile__ASP:
+          std::cout << "MPEG4 Mpeg4Profile    : ASP" << std::endl;
+          break;
+        default:
+          break;
+        }
+      }
+      if(GetProfilesResponse.Profiles[i]->VideoEncoderConfiguration->H264)
+      {
+        std::cout << "H264 GovLength      : " << GetProfilesResponse.Profiles[i]->VideoEncoderConfiguration->H264->GovLength << std::endl;
+        switch (GetProfilesResponse.Profiles[i]->VideoEncoderConfiguration->H264->H264Profile)
+        {
+        case tt__H264Profile__Baseline:
+          std::cout << "H264 H264Profile    : Baseline" << std::endl;
+          break;
+        case tt__H264Profile__Main:
+          std::cout << "H264 H264Profile    : Main" << std::endl;
+          break;
+        case tt__H264Profile__Extended:
+          std::cout << "H264 H264Profile    : Extended" << std::endl;
+          break;
+        case tt__H264Profile__High:
+          std::cout << "H264 H264Profile    : High" << std::endl;
+          break;
+        default:
+          break;
+        }
+      }
+      if(GetProfilesResponse.Profiles[i]->VideoEncoderConfiguration->Multicast)
+      {
+        switch (GetProfilesResponse.Profiles[i]->VideoEncoderConfiguration->Multicast->Address->Type)
+        {
+        case tt__IPType__IPv4:
+          std::cout << "Multicast Address IPv4  : " << GetProfilesResponse.Profiles[i]->VideoEncoderConfiguration->Multicast->Address->IPv4Address << std::endl;
+          break;
+        case tt__IPType__IPv6:
+          std::cout << "Multicast Address IPv6  : " << GetProfilesResponse.Profiles[i]->VideoEncoderConfiguration->Multicast->Address->IPv6Address << std::endl;
+          break;
+        default:
+          break;
+        }
+      }
+      std::cout << "SessionTimeout      : " << GetProfilesResponse.Profiles[i]->VideoEncoderConfiguration->SessionTimeout << std::endl;
     }
 
 
+
+    if (GetSnapshotUriResponse.MediaUri)
+    {
+      std::cout << "Snapshot Uri      : " << GetSnapshotUriResponse.MediaUri->Uri.c_str() << std::endl;
+      // save_snapshot(i, GetSnapshotUriResponse.MediaUri->Uri.c_str());
+    }
     // get stream RTSP URI for profile
     _trt__GetStreamUri *trt__GetStreamUri = soap_new__trt__GetStreamUri(soap, -1);
 		trt__GetStreamUri->StreamSetup = soap_new_tt__StreamSetup(soap, -1);
@@ -348,7 +429,7 @@ int main()
     check_response(soap);
     if(trt__GetStreamUriResponse->MediaUri)
     {
-      std::cout << "Stream RTSP Uri: " << trt__GetStreamUriResponse->MediaUri->Uri.c_str() << std::endl;
+      std::cout << "Stream RTSP Uri   : " << trt__GetStreamUriResponse->MediaUri->Uri.c_str() << std::endl;
     }
 
     // get stream HTTP URI for profile
@@ -359,7 +440,7 @@ int main()
     check_response(soap);
     if(trt__GetStreamUriResponse->MediaUri)
     {
-      std::cout << "Stream HTTP Uri: " << trt__GetStreamUriResponse->MediaUri->Uri.c_str() << std::endl;
+      std::cout << "Stream HTTP Uri   : " << trt__GetStreamUriResponse->MediaUri->Uri.c_str() << std::endl;
     }
 
     // // get stream RTSP URI for profile
