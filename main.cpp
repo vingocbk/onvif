@@ -182,7 +182,7 @@ int main()
   MediaBindingProxy proxyMedia(soap);
 
   // get device info and print
-  std::cout << "----------------GetDeviceInformation--------------" << std::endl;
+  // std::cout << "----------------GetDeviceInformation--------------" << std::endl;
   proxyDevice.soap_endpoint = HOSTNAME;
   _tds__GetDeviceInformation GetDeviceInformation;
   _tds__GetDeviceInformationResponse GetDeviceInformationResponse;
@@ -190,347 +190,28 @@ int main()
   if (proxyDevice.GetDeviceInformation(&GetDeviceInformation, GetDeviceInformationResponse))
     report_error(soap);
   check_response(soap);
-  // std::cout << "Manufacturer:    " << GetDeviceInformationResponse.Manufacturer << std::endl;
-  // std::cout << "Model:           " << GetDeviceInformationResponse.Model << std::endl;
-  // std::cout << "FirmwareVersion: " << GetDeviceInformationResponse.FirmwareVersion << std::endl;
-  // std::cout << "SerialNumber:    " << GetDeviceInformationResponse.SerialNumber << std::endl;
-  // std::cout << "HardwareId:      " << GetDeviceInformationResponse.HardwareId << std::endl;
 
   // get device capabilities and print media
-  std::cout << "----------------GetCapabilities--------------" << std::endl;
+  // std::cout << "----------------GetCapabilities--------------" << std::endl;
   _tds__GetCapabilities GetCapabilities;
   _tds__GetCapabilitiesResponse GetCapabilitiesResponse;
-  set_credentials(soap);
-  if (proxyDevice.GetCapabilities(&GetCapabilities, GetCapabilitiesResponse))
-    report_error(soap);
-  check_response(soap);
-
-
-
-  //get device discovery mode and print
-  std::cout << "----------------GetDiscoveryMode--------------" << std::endl;
+  // std::cout << "----------------GetDiscoveryMode--------------" << std::endl;
   _tds__GetDiscoveryMode GetDiscoveryMode;
   _tds__GetDiscoveryModeResponse GetDiscoveryModeResponse;
-  set_credentials(soap);
-  //if (proxyDevice.GetDeviceInformation(&GetDeviceInformation, GetDeviceInformationResponse))
-  if(proxyDevice.GetDiscoveryMode(&GetDiscoveryMode, GetDiscoveryModeResponse))
-    report_error(soap);
-  check_response(soap);
-
-  switch (GetDiscoveryModeResponse.DiscoveryMode)
-  {
-  case tt__DiscoveryMode__Discoverable:
-    /* code */
-    std::cout << "DiscoveryMode: Discoverable" << std::endl;
-    break;
-  case tt__DiscoveryMode__NonDiscoverable:
-    /* code */
-    std::cout << "DiscoveryMode: NonDiscoverable" << std::endl;
-    break;
-  default:
-    break;
-  }
-  //get device user  and print
-  std::cout << "----------------GetUsers--------------" << std::endl;
+  // std::cout << "----------------GetUsers--------------" << std::endl;
   _tds__GetUsers GetUsers;
   _tds__GetUsersResponse GetUsersResponse;
-  set_credentials(soap);
-  if(proxyDevice.GetUsers(&GetUsers, GetUsersResponse))
-    report_error(soap);
-  check_response(soap);
-  for (long unsigned int i = 0; i < GetUsersResponse.User.size(); ++i)
-  {
-    std::cout << "Username " << i+1 << ": " << GetUsersResponse.User[i]->Username << std::endl;
-    switch (GetUsersResponse.User[i]->UserLevel)
-    {
-    case tt__UserLevel__Administrator:
-      /* code */
-      std::cout << "UserLevel : Administrator" << std::endl;
-      break;
-    case tt__UserLevel__Operator:
-      /* code */
-      std::cout << "UserLevel : Operator" << std::endl;
-      break;
-    case tt__UserLevel__User:
-      /* code */
-      std::cout << "UserLevel : User" << std::endl;
-      break;
-    case tt__UserLevel__Anonymous:
-      /* code */
-      std::cout << "UserLevel : Anonymous" << std::endl;
-      break;
-    case tt__UserLevel__Extended:
-      /* code */
-      std::cout << "UserLevel : Extended" << std::endl;
-      break;
-    default:
-      break;
-    }
-  }
-
-
-  // get device profiles
-  std::cout << "----------------GetProfiles Media--------------" << std::endl;
-  // set the Media proxy endpoint to XAddr
-  proxyMedia.soap_endpoint = GetCapabilitiesResponse.Capabilities->Media->XAddr.c_str();
-  // std::cout << "proxyMedia.soap_endpoint : " << proxyMedia.soap_endpoint << std::endl;
+  // std::cout << "----------------GetProfiles Media--------------" << std::endl;
   _trt__GetProfiles GetProfiles;
   _trt__GetProfilesResponse GetProfilesResponse;
-  set_credentials(soap);
-  if (proxyMedia.GetProfiles(&GetProfiles, GetProfilesResponse))
-    report_error(soap);
-  check_response(soap);
-
-  // for each profile get snapshot
-  for (long unsigned int i = 0; i < GetProfilesResponse.Profiles.size(); ++i)
-  {
-    // get snapshot URI for profile
-    _trt__GetSnapshotUri GetSnapshotUri;
-    _trt__GetSnapshotUriResponse GetSnapshotUriResponse;
-    GetSnapshotUri.ProfileToken = GetProfilesResponse.Profiles[i]->token;
-    set_credentials(soap);
-    if (proxyMedia.GetSnapshotUri(&GetSnapshotUri, GetSnapshotUriResponse))
-      report_error(soap);
-    check_response(soap);
-    // std::cout << "Profile name        : " << GetProfilesResponse.Profiles[i]->Name << std::endl;
-    // std::cout << "Profile token       : " << GetProfilesResponse.Profiles[i]->token << std::endl;
-
-    if(GetProfilesResponse.Profiles[i]->VideoEncoderConfiguration)
-    {
-      // std::cout << "-VideoEncoderConfiguration-" << std::endl;
-      // std::cout << "token               : " << GetProfilesResponse.Profiles[i]->VideoEncoderConfiguration->token << std::endl;
-      // std::cout << "Name                : " << GetProfilesResponse.Profiles[i]->VideoEncoderConfiguration->Name << std::endl;
-      // std::cout << "UseCount            : " << GetProfilesResponse.Profiles[i]->VideoEncoderConfiguration->UseCount << std::endl;
-      // std::cout << "GuaranteedFrameRate : " << (GetProfilesResponse.Profiles[i]->VideoEncoderConfiguration->GuaranteedFrameRate ? "true":"false") << std::endl;
-      switch (GetProfilesResponse.Profiles[i]->VideoEncoderConfiguration->Encoding)
-      {
-      case tt__VideoEncoding__JPEG:
-        // std::cout << "Encoding            : JPEG" << std::endl;
-        break;
-      case tt__VideoEncoding__MPEG4:
-        // std::cout << "Encoding            : MPEG4" << std::endl;
-        break;
-      case tt__VideoEncoding__H264:
-        // std::cout << "Encoding            : H264" << std::endl;
-        break;
-      default:
-        break;
-      }
-      // std::cout << "Resolution Width  : " << GetProfilesResponse.Profiles[i]->VideoEncoderConfiguration->Resolution->Width << std::endl;
-      // std::cout << "Resolution Height : " << GetProfilesResponse.Profiles[i]->VideoEncoderConfiguration->Resolution->Height << std::endl;
-      // std::cout << "Quality           : " << GetProfilesResponse.Profiles[i]->VideoEncoderConfiguration->Quality << std::endl;
-      // std::cout << "FrameRateLimit    : " << GetProfilesResponse.Profiles[i]->VideoEncoderConfiguration->RateControl->FrameRateLimit << std::endl;
-      // std::cout << "EncodingInterval  : " << GetProfilesResponse.Profiles[i]->VideoEncoderConfiguration->RateControl->EncodingInterval << std::endl;
-      // std::cout << "BitrateLimit      : " << GetProfilesResponse.Profiles[i]->VideoEncoderConfiguration->RateControl->BitrateLimit << std::endl;
-      if(GetProfilesResponse.Profiles[i]->VideoEncoderConfiguration->MPEG4)
-      {
-        // std::cout << "MPEG4 GovLength    : " << GetProfilesResponse.Profiles[i]->VideoEncoderConfiguration->MPEG4->GovLength << std::endl;
-        switch (GetProfilesResponse.Profiles[i]->VideoEncoderConfiguration->MPEG4->Mpeg4Profile)
-        {
-        case tt__Mpeg4Profile__SP:
-          // std::cout << "MPEG4 Mpeg4Profile    : SP" << std::endl;
-          break;
-        case tt__Mpeg4Profile__ASP:
-          // std::cout << "MPEG4 Mpeg4Profile    : ASP" << std::endl;
-          break;
-        default:
-          break;
-        }
-      }
-      if(GetProfilesResponse.Profiles[i]->VideoEncoderConfiguration->H264)
-      {
-        // std::cout << "H264 GovLength      : " << GetProfilesResponse.Profiles[i]->VideoEncoderConfiguration->H264->GovLength << std::endl;
-        switch (GetProfilesResponse.Profiles[i]->VideoEncoderConfiguration->H264->H264Profile)
-        {
-        case tt__H264Profile__Baseline:
-          // std::cout << "H264 H264Profile    : Baseline" << std::endl;
-          break;
-        case tt__H264Profile__Main:
-          // std::cout << "H264 H264Profile    : Main" << std::endl;
-          break;
-        case tt__H264Profile__Extended:
-          // std::cout << "H264 H264Profile    : Extended" << std::endl;
-          break;
-        case tt__H264Profile__High:
-          // std::cout << "H264 H264Profile    : High" << std::endl;
-          break;
-        default:
-          break;
-        }
-      }
-      if(GetProfilesResponse.Profiles[i]->VideoEncoderConfiguration->Multicast)
-      {
-        switch (GetProfilesResponse.Profiles[i]->VideoEncoderConfiguration->Multicast->Address->Type)
-        {
-        case tt__IPType__IPv4:
-          // std::cout << "Multicast Address IPv4  : " << *GetProfilesResponse.Profiles[i]->VideoEncoderConfiguration->Multicast->Address->IPv4Address << std::endl;
-          break;
-        case tt__IPType__IPv6:
-          // std::cout << "Multicast Address IPv6  : " << *GetProfilesResponse.Profiles[i]->VideoEncoderConfiguration->Multicast->Address->IPv6Address << std::endl;
-          break;
-        default:
-          break;
-        }
-      }
-      // std::cout << "SessionTimeout      : " << GetProfilesResponse.Profiles[i]->VideoEncoderConfiguration->SessionTimeout << std::endl;
-    }
-    if (GetSnapshotUriResponse.MediaUri)
-    {
-      // std::cout << "Snapshot Uri      : " << GetSnapshotUriResponse.MediaUri->Uri.c_str() << std::endl;
-      // save_snapshot(i, GetSnapshotUriResponse.MediaUri->Uri.c_str());
-    }
-    // get stream RTSP URI for profile
-    _trt__GetStreamUri *trt__GetStreamUri = soap_new__trt__GetStreamUri(soap, -1);
-		trt__GetStreamUri->StreamSetup = soap_new_tt__StreamSetup(soap, -1);
-		trt__GetStreamUri->StreamSetup->Stream = tt__StreamType__RTP_Unicast;
-		trt__GetStreamUri->StreamSetup->Transport = soap_new_tt__Transport(soap, -1);
-		trt__GetStreamUri->StreamSetup->Transport->Protocol = tt__TransportProtocol__RTSP;
-
-
-    _trt__GetStreamUriResponse *trt__GetStreamUriResponse = soap_new__trt__GetStreamUriResponse(soap, -1);
-    trt__GetStreamUri->ProfileToken = GetProfilesResponse.Profiles[i]->token;
-    set_credentials(soap);
-    if (proxyMedia.GetStreamUri(trt__GetStreamUri, *trt__GetStreamUriResponse))
-      report_error(soap);
-    check_response(soap);
-    if(trt__GetStreamUriResponse->MediaUri)
-    {
-      // std::cout << "Stream RTSP Uri   : " << trt__GetStreamUriResponse->MediaUri->Uri.c_str() << std::endl;
-    }
-
-    // get stream HTTP URI for profile
-    trt__GetStreamUri->StreamSetup->Transport->Protocol = tt__TransportProtocol__HTTP;
-    set_credentials(soap);
-    if (proxyMedia.GetStreamUri(trt__GetStreamUri, *trt__GetStreamUriResponse))
-      report_error(soap);
-    check_response(soap);
-    if(trt__GetStreamUriResponse->MediaUri)
-    {
-      // std::cout << "Stream HTTP Uri   : " << trt__GetStreamUriResponse->MediaUri->Uri.c_str() << std::endl;
-    }
-
-    // std::cout << "    ------------    " << std::endl;
-
-    // // get stream RTSP URI for profile
-    // struct _trt__GetStreamUri GetStreamUri;
-    // struct _trt__GetStreamUriResponse GetStreamUriResponse;
-    // GetStreamUri.StreamSetup = (struct tt__StreamSetup*)soap_malloc(soap, sizeof(struct tt__StreamSetup));
-    // if (NULL == GetStreamUri.StreamSetup){
-    //     std::cout << "Creat StreamSetup Error" << std::endl;
-    // }
-    // GetStreamUri.StreamSetup->Stream = tt__StreamType__RTP_Unicast;
-    // GetStreamUri.StreamSetup->Transport = (struct tt__Transport *)soap_malloc(soap, sizeof(struct tt__Transport));
-    // if (NULL == GetStreamUri.StreamSetup->Transport){
-    //     std::cout << "Creat StreamSetup Transport Error" << std::endl;
-    // }
-    // GetStreamUri.StreamSetup->Transport->Protocol = tt__TransportProtocol__RTSP;
-    // GetStreamUri.StreamSetup->Transport->Tunnel = 0;
-    // // GetStreamUri.StreamSetup->__size = 1;
-    // // GetStreamUri.StreamSetup->__any = NULL;
-    // // GetStreamUri.StreamSetup->__anyAttribute = NULL;
-    // GetStreamUri.ProfileToken = GetProfilesResponse.Profiles[i]->token;
-    // set_credentials(soap);
-    // if (proxyMedia.GetStreamUri(&GetStreamUri, GetStreamUriResponse))
-    //   report_error(soap);
-    // check_response(soap);
-    // // soap_call___trt__GetStreamUri(soap, media_addr, NULL, &trt__GetStreamUri, &response);
-    // if (GetStreamUriResponse.MediaUri)
-    // {
-    //   std::cout << "Stream RTSP Uri: " << GetStreamUriResponse.MediaUri->Uri.c_str() << std::endl;
-    // }
-
-    if(GetProfilesResponse.Profiles[i]->Name == "H.264")
-    {
-      // getVideoEncoderConfiguration
-      _trt__GetVideoEncoderConfiguration *GetVideoEncoderConfiguration = soap_new__trt__GetVideoEncoderConfiguration(soap, -1);
-      _trt__GetVideoEncoderConfigurationResponse *GetVideoEncoderConfigurationResponse = soap_new__trt__GetVideoEncoderConfigurationResponse(soap, -1);
-      
-      GetVideoEncoderConfiguration->ConfigurationToken = GetProfilesResponse.Profiles[i]->VideoEncoderConfiguration->token;
-      
-      set_credentials(soap);
-      if (proxyMedia.GetVideoEncoderConfiguration(GetVideoEncoderConfiguration, *GetVideoEncoderConfigurationResponse))
-        report_error(soap);
-      check_response(soap);
-      std::cout << "GetVideoEncoderConfigurationResponse token " << GetVideoEncoderConfigurationResponse->Configuration->token << std::endl;
-      std::cout << "GetVideoEncoderConfigurationResponse Name " << GetVideoEncoderConfigurationResponse->Configuration->Name << std::endl;
-      std::cout << "GetVideoEncoderConfigurationResponse UseCount " << GetVideoEncoderConfigurationResponse->Configuration->UseCount << std::endl;
-      // std::cout << "Stream RTSP Uri   : " << trt__GetStreamUriResponse->MediaUri->Uri.c_str() << std::endl;
-      
-      //set up media
-      _trt__SetVideoEncoderConfiguration *SetVideoEncoderConfiguration = soap_new__trt__SetVideoEncoderConfiguration(soap, -1);
-      // _trt__SetVideoEncoderConfiguration *SetVideoEncoderConfiguration;
-      _trt__SetVideoEncoderConfigurationResponse *SetVideoEncoderConfigurationResponse = soap_new__trt__SetVideoEncoderConfigurationResponse(soap, -1);
-      // _trt__SetVideoEncoderConfigurationResponse *SetVideoEncoderConfigurationResponse;
-      // SetVideoEncoderConfiguration->Configuration = soap_new_tt__Configuration(soap, -1);
-      SetVideoEncoderConfiguration->Configuration = soap_new_tt__VideoEncoderConfiguration(soap, -1);
-      SetVideoEncoderConfiguration->Configuration->token = GetVideoEncoderConfigurationResponse->Configuration->token;
-
-      // SetVideoEncoderConfiguration = GetVideoEncoderConfigurationResponse;
-      // if (NULL == SetVideoEncoderConfiguration->Configuration->token){
-      //     printf("soap_malloc is error\n");
-      //     // ret = -1;
-      // }
-      // SetVideoEncoderConfiguration->Configuration->token, GetProfilesResponse.Profiles[i]->VideoEncoderConfiguration->token);
-      // std::cout::cout << "    1    " << std::endl;
-      // strcpy( << "    2    " << std::endl;
-      // // SetVideoEncoderConfiguration->Configuration->token = GetProfilesResponse.Profiles[i]->VideoEncoderConfiguration->token;
-
-
-      SetVideoEncoderConfiguration->Configuration->Name = GetVideoEncoderConfigurationResponse->Configuration->Name;
-
-      // SetVideoEncoderConfiguration = GetVideoEncoderConfigurationResponse;
-      // std::cout << "    3    " << std::endl;
-      SetVideoEncoderConfiguration->Configuration->UseCount = GetVideoEncoderConfigurationResponse->Configuration->UseCount;
-      SetVideoEncoderConfiguration->Configuration->Encoding = GetVideoEncoderConfigurationResponse->Configuration->Encoding;
-      SetVideoEncoderConfiguration->Configuration->Resolution = soap_new_tt__VideoResolution(soap, -1);
-      std::cout << "Input Width: ";
-      int Width;
-      std::cin >> Width;
-      SetVideoEncoderConfiguration->Configuration->Resolution->Width = Width;
-      std::cout << "Input Height: ";
-      int Height;
-      std::cin >> Height;
-      SetVideoEncoderConfiguration->Configuration->Resolution->Height = Height;
-      SetVideoEncoderConfiguration->Configuration->Quality = GetVideoEncoderConfigurationResponse->Configuration->Quality;
-      SetVideoEncoderConfiguration->Configuration->RateControl = soap_new_tt__VideoRateControl(soap, -1);
-      SetVideoEncoderConfiguration->Configuration->RateControl->FrameRateLimit = GetVideoEncoderConfigurationResponse->Configuration->RateControl->FrameRateLimit;
-      SetVideoEncoderConfiguration->Configuration->RateControl->EncodingInterval = GetVideoEncoderConfigurationResponse->Configuration->RateControl->EncodingInterval;
-      SetVideoEncoderConfiguration->Configuration->RateControl->BitrateLimit = GetVideoEncoderConfigurationResponse->Configuration->RateControl->BitrateLimit;
-      SetVideoEncoderConfiguration->Configuration->H264 = soap_new_tt__H264Configuration(soap, -1);
-      
-      SetVideoEncoderConfiguration->Configuration->H264->GovLength = GetVideoEncoderConfigurationResponse->Configuration->H264->GovLength;
-      SetVideoEncoderConfiguration->Configuration->H264->H264Profile = GetVideoEncoderConfigurationResponse->Configuration->H264->H264Profile;
-      SetVideoEncoderConfiguration->Configuration->Multicast = soap_new_tt__MulticastConfiguration(soap, -1);
-      SetVideoEncoderConfiguration->Configuration->Multicast->Address = soap_new_tt__IPAddress(soap, -1);
-      SetVideoEncoderConfiguration->Configuration->Multicast->Address->Type = GetProfilesResponse.Profiles[i]->VideoEncoderConfiguration->Multicast->Address->Type;
-      switch (SetVideoEncoderConfiguration->Configuration->Multicast->Address->Type)
-      {
-      case tt__IPType__IPv4:
-        SetVideoEncoderConfiguration->Configuration->Multicast->Address->IPv4Address = GetProfilesResponse.Profiles[i]->VideoEncoderConfiguration->Multicast->Address->IPv4Address;
-        break;
-      case tt__IPType__IPv6:
-        SetVideoEncoderConfiguration->Configuration->Multicast->Address->IPv6Address = GetProfilesResponse.Profiles[i]->VideoEncoderConfiguration->Multicast->Address->IPv6Address;
-        break;
-      default:
-        break;
-      }
-      SetVideoEncoderConfiguration->Configuration->Multicast->Port = GetProfilesResponse.Profiles[i]->VideoEncoderConfiguration->Multicast->Port;
-      SetVideoEncoderConfiguration->Configuration->Multicast->TTL = GetProfilesResponse.Profiles[i]->VideoEncoderConfiguration->Multicast->TTL;
-      SetVideoEncoderConfiguration->Configuration->Multicast->AutoStart = GetProfilesResponse.Profiles[i]->VideoEncoderConfiguration->Multicast->AutoStart;
-      SetVideoEncoderConfiguration->Configuration->SessionTimeout = GetProfilesResponse.Profiles[i]->VideoEncoderConfiguration->SessionTimeout;
-      SetVideoEncoderConfiguration->ForcePersistence = false;
-
-      set_credentials(soap);
-      if (proxyMedia.SetVideoEncoderConfiguration(SetVideoEncoderConfiguration, *SetVideoEncoderConfigurationResponse))
-        report_error(soap);
-      check_response(soap);
-    }
-
-
-  }
-
-   
+  //for Createuser
+  _tds__CreateUsers CreateUsers;
+  // CreateUsers.User = soap_new__tds__UserCredential_Extension(soap, -1);
+  _tds__CreateUsersResponse CreateUsersResponse;
+  
   std::string namestring;
+  std::string username_create;
+  std::string password_create;
   while (true)
   {
     int mode_view;
@@ -937,12 +618,62 @@ int main()
         {
         case ADD_NEW_USER:
           /* code */
+          proxyDevice.soap_endpoint = HOSTNAME;
+          std::cout << "Input Username: ";
+          std::cin >> username_create;
+          std::cout << "Input password: ";
+          std::cin >> password_create;
+          int UserLevel;
+          do
+          {
+            std::cout << "Input 1- UserLevel Administrator" << std::endl;
+            std::cout << "Input 2- UserLevel Operator" << std::endl;
+            std::cout << "Input 3- UserLevel User" << std::endl;
+            std::cout << "Input 4- UserLevel Anonymous" << std::endl;
+            std::cout << "Input 5- UserLevel Extended" << std::endl;
+            std::cout << "Input 0- Exit" << std::endl;
+            std::cin >> UserLevel;
+          }while (!(UserLevel == Administrator 
+                || UserLevel == Operator 
+                || UserLevel == User 
+                || UserLevel == Anonymous 
+                || UserLevel == Extended 
+                || UserLevel == EXIT_MODE));
+          CreateUsers.User[0]->Username = username_create;
+          CreateUsers.User[0]->Password = &password_create;
+          switch(UserLevel)
+          {
+          case Administrator:
+            CreateUsers.User[0]->UserLevel = tt__UserLevel__Administrator;
+            break;
+          case Operator:
+            CreateUsers.User[0]->UserLevel = tt__UserLevel__Operator;
+            break;
+          case User:
+            CreateUsers.User[0]->UserLevel = tt__UserLevel__User;
+            break;
+          case Anonymous:
+            CreateUsers.User[0]->UserLevel = tt__UserLevel__Anonymous;
+            break;
+          case Extended:
+            CreateUsers.User[0]->UserLevel = tt__UserLevel__Extended;
+            break;
+          case EXIT_MODE:
+            goto go_to_exit;
+            break;
+          default:
+            break;
+          }  
+          set_credentials(soap);
+          if (proxyDevice.CreateUsers(&CreateUsers, CreateUsersResponse))
+            report_error(soap);
+          check_response(soap);
           break;
         case DELETE_USER:
           /* code */
+          
           break;
         case SET_RESOLUTION:
-          /* code */
           //for set up video config
           //get media endpoint
           proxyDevice.soap_endpoint = HOSTNAME;
@@ -1058,6 +789,119 @@ int main()
           
           break;
         case SET_FRAME_RATE:
+          //get media endpoint
+          proxyDevice.soap_endpoint = HOSTNAME;
+          set_credentials(soap);
+          if (proxyDevice.GetCapabilities(&GetCapabilities, GetCapabilitiesResponse))
+            report_error(soap);
+          check_response(soap);
+          //get stream uri
+          proxyMedia.soap_endpoint = GetCapabilitiesResponse.Capabilities->Media->XAddr.c_str();
+          // _trt__GetProfiles GetProfiles;
+          // _trt__GetProfilesResponse GetProfilesResponse;
+          set_credentials(soap);
+          if (proxyMedia.GetProfiles(&GetProfiles, GetProfilesResponse))
+            report_error(soap);
+          check_response(soap);
+          for (long unsigned int i = 0; i < GetProfilesResponse.Profiles.size(); ++i)
+          {
+            if(GetProfilesResponse.Profiles[i]->VideoEncoderConfiguration)
+            {
+              std::cout << "Input "<< i+1 << "- "<< GetProfilesResponse.Profiles[i]->Name << std::endl;
+            }
+          }
+          // int name_media;
+          
+          std::cin >> name_media;
+          switch (name_media)
+          {
+          case MJPEG:
+            namestring = "MJPEG";
+            break;
+          case H_264:
+            namestring = "H.264";
+            break;
+          case PLUGINFREE:
+            namestring = "PLUGINFREE";
+            break;
+          case MOBILE:
+            namestring = "MOBILE";
+            break;
+          default:
+            break;
+          }
+
+          for (long unsigned int i = 0; i < GetProfilesResponse.Profiles.size(); ++i)
+          {
+            if(GetProfilesResponse.Profiles[i]->Name == namestring)
+            {
+              _trt__GetVideoEncoderConfiguration *GetVideoEncoderConfiguration = soap_new__trt__GetVideoEncoderConfiguration(soap, -1);
+              _trt__GetVideoEncoderConfigurationResponse *GetVideoEncoderConfigurationResponse = soap_new__trt__GetVideoEncoderConfigurationResponse(soap, -1);
+              GetVideoEncoderConfiguration->ConfigurationToken = GetProfilesResponse.Profiles[i]->VideoEncoderConfiguration->token;
+              set_credentials(soap);
+              if (proxyMedia.GetVideoEncoderConfiguration(GetVideoEncoderConfiguration, *GetVideoEncoderConfigurationResponse))
+                report_error(soap);
+              check_response(soap);
+              //set up media
+              _trt__SetVideoEncoderConfiguration *SetVideoEncoderConfiguration = soap_new__trt__SetVideoEncoderConfiguration(soap, -1);
+              _trt__SetVideoEncoderConfigurationResponse *SetVideoEncoderConfigurationResponse = soap_new__trt__SetVideoEncoderConfigurationResponse(soap, -1);
+              SetVideoEncoderConfiguration->Configuration = soap_new_tt__VideoEncoderConfiguration(soap, -1);
+              SetVideoEncoderConfiguration->Configuration->token = GetVideoEncoderConfigurationResponse->Configuration->token;
+              SetVideoEncoderConfiguration->Configuration->Name = GetVideoEncoderConfigurationResponse->Configuration->Name;
+              SetVideoEncoderConfiguration->Configuration->UseCount = GetVideoEncoderConfigurationResponse->Configuration->UseCount;
+              SetVideoEncoderConfiguration->Configuration->Encoding = GetVideoEncoderConfigurationResponse->Configuration->Encoding;
+              SetVideoEncoderConfiguration->Configuration->Resolution = soap_new_tt__VideoResolution(soap, -1);
+              SetVideoEncoderConfiguration->Configuration->Resolution->Width = GetVideoEncoderConfigurationResponse->Configuration->Resolution->Width;
+              SetVideoEncoderConfiguration->Configuration->Resolution->Height = GetVideoEncoderConfigurationResponse->Configuration->Resolution->Height;
+              SetVideoEncoderConfiguration->Configuration->Quality = GetVideoEncoderConfigurationResponse->Configuration->Quality;
+              SetVideoEncoderConfiguration->Configuration->RateControl = soap_new_tt__VideoRateControl(soap, -1);
+              // int max_frame;
+              int input_frame;
+              std::cout << "Input Frame: ";
+              std::cin >> input_frame;
+              SetVideoEncoderConfiguration->Configuration->RateControl->FrameRateLimit = input_frame;
+              SetVideoEncoderConfiguration->Configuration->RateControl->EncodingInterval = GetVideoEncoderConfigurationResponse->Configuration->RateControl->EncodingInterval;
+              SetVideoEncoderConfiguration->Configuration->RateControl->BitrateLimit = GetVideoEncoderConfigurationResponse->Configuration->RateControl->BitrateLimit;
+              if(SetVideoEncoderConfiguration->Configuration->H264){
+                SetVideoEncoderConfiguration->Configuration->H264 = soap_new_tt__H264Configuration(soap, -1);
+                SetVideoEncoderConfiguration->Configuration->H264->GovLength = GetVideoEncoderConfigurationResponse->Configuration->H264->GovLength;
+                SetVideoEncoderConfiguration->Configuration->H264->H264Profile = GetVideoEncoderConfigurationResponse->Configuration->H264->H264Profile;
+              }
+              if(SetVideoEncoderConfiguration->Configuration->MPEG4){
+                SetVideoEncoderConfiguration->Configuration->MPEG4 = soap_new_tt__Mpeg4Configuration(soap, -1);
+                SetVideoEncoderConfiguration->Configuration->MPEG4->GovLength = GetVideoEncoderConfigurationResponse->Configuration->MPEG4->GovLength;
+                SetVideoEncoderConfiguration->Configuration->MPEG4->Mpeg4Profile = GetVideoEncoderConfigurationResponse->Configuration->MPEG4->Mpeg4Profile;
+              }
+              SetVideoEncoderConfiguration->Configuration->Multicast = soap_new_tt__MulticastConfiguration(soap, -1);
+              SetVideoEncoderConfiguration->Configuration->Multicast->Address = soap_new_tt__IPAddress(soap, -1);
+              SetVideoEncoderConfiguration->Configuration->Multicast->Address->Type = GetVideoEncoderConfigurationResponse->Configuration->Multicast->Address->Type;
+              switch (SetVideoEncoderConfiguration->Configuration->Multicast->Address->Type)
+              {
+              case tt__IPType__IPv4:
+                SetVideoEncoderConfiguration->Configuration->Multicast->Address->IPv4Address = GetVideoEncoderConfigurationResponse->Configuration->Multicast->Address->IPv4Address;
+                break;
+              case tt__IPType__IPv6:
+                SetVideoEncoderConfiguration->Configuration->Multicast->Address->IPv6Address = GetVideoEncoderConfigurationResponse->Configuration->Multicast->Address->IPv6Address;
+                break;
+              default:
+                break;
+              }
+              SetVideoEncoderConfiguration->Configuration->Multicast->Port = GetVideoEncoderConfigurationResponse->Configuration->Multicast->Port;
+              SetVideoEncoderConfiguration->Configuration->Multicast->TTL = GetVideoEncoderConfigurationResponse->Configuration->Multicast->TTL;
+              SetVideoEncoderConfiguration->Configuration->Multicast->AutoStart = GetVideoEncoderConfigurationResponse->Configuration->Multicast->AutoStart;
+              SetVideoEncoderConfiguration->Configuration->SessionTimeout = GetVideoEncoderConfigurationResponse->Configuration->SessionTimeout;
+              SetVideoEncoderConfiguration->ForcePersistence = false;
+
+              set_credentials(soap);
+              if (proxyMedia.SetVideoEncoderConfiguration(SetVideoEncoderConfiguration, *SetVideoEncoderConfigurationResponse))
+                report_error(soap);
+              check_response(soap);
+            
+            }
+          }
+
+          break;
+        case SET_MAX_BITRATE:
           /* code */
           break;
         case EXIT_MODE:

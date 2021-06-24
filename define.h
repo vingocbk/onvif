@@ -54,3 +54,11 @@ enum
     MOBILE
 };
 
+enum
+{
+    Administrator = 1,
+    Operator,
+    User,
+    Anonymous,
+    Extended
+};
