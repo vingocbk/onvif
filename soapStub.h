@@ -14671,8 +14671,8 @@ class SOAP_CMAC tt__ConfigurationEntity {
         /// Required element 'tt:UseCount' of XML schema type 'xsd:int'
         int UseCount;
         /// Required attribute 'token' of XML schema type 'tt:ReferenceToken'
-        std::string token;
         /// Context that manages this object
+        std::string token;
         struct soap *soap;
       public:
         /// Return unique type id SOAP_TYPE_tt__ConfigurationEntity

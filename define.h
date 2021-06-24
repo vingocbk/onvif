@@ -23,3 +23,34 @@ enum
     DEVICE_CAPABILITIES,
     DEVICE_USER
 };
+
+enum
+{
+    MEDIA_SNAPSHOT_URI = 1,
+    MEDIA_STREAM_URI,
+    MEDIA_PROFILES
+};
+
+enum
+{
+    SETUP_USER = 1,
+    SETUP_MEDIA 
+};
+
+enum
+{
+    ADD_NEW_USER = 1,
+    DELETE_USER,
+    SET_RESOLUTION,
+    SET_FRAME_RATE,
+    SET_MAX_BITRATE
+};
+
+enum
+{
+    MJPEG = 1,
+    H_264,
+    PLUGINFREE,
+    MOBILE
+};
+
