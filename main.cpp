@@ -12,7 +12,10 @@
 #include "define.h"
 #define USERNAME "admin"
 #define PASSWORD "elcom_123"
-#define HOSTNAME "http://192.168.51.150/onvif/device_service"
+
+#define AUTHEN
+// #define HOSTNAME "http://192.168.51.150/onvif/device_service"
+#define HOSTNAME "http://192.168.51.14:8080/onvif/device_service"
 // using http instead of https is not safe unless you secure message integrity with WS-Security by uncommenting:
 // #define PROTECT
 
@@ -38,11 +41,14 @@ void report_error(struct soap *soap)
 // to set the timestamp and authentication credentials in a request message
 void set_credentials(struct soap *soap)
 {
+#ifdef AUTHEN
   soap_wsse_delete_Security(soap);
   if (soap_wsse_add_Timestamp(soap, "Time", 10)
   //  || soap_wsse_add_UsernameTokenDigest(soap, NULL, USERNAME, PASSWORD))
    || soap_wsse_add_UsernameTokenText(soap, "Auth", USERNAME, PASSWORD))
     report_error(soap);
+
+#endif
 #ifdef PROTECT
   if (!privk)
   {
